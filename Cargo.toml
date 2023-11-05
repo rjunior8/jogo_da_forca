@@ -1,0 +1,18 @@
+[package]
+name = "jogo_da_forca"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "jogo_da_forca"
+src = "src/main.rs"
+
+[lib]
+name = "jogo_da_forca"
+path = "src/lib.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clearscreen = "2.0.1"
+rand = "0.8.5"
