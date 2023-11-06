@@ -1,5 +1,5 @@
+use std::fmt::Debug;
 use std::io::stdin;
-use std::str::MatchIndices;
 
 use crate::puppet::gibbet::Gibbet;
 
@@ -42,13 +42,15 @@ pub trait GameInterface {
 
     fn wrong_answer(&mut self, input: String) -> ();
 
-    fn prompt_user() -> String;
+    fn read_user_input() -> String;
 
     fn print_gibbet_status(&self) -> ();
 
     fn print_game(&mut self) -> ();
 
-    fn verify_answer(&mut self) -> ();
+    fn verify_answer(&mut self, input: String) -> ();
+
+    fn prompt_user(&mut self) -> ();
 
     fn win(&self) -> bool;
 
@@ -88,6 +90,7 @@ impl GameInterface for Game {
 
     fn start(&mut self) -> () {
         self.formed_word_by_hits = Self::get_blank_chars(self.word.len());
+        self.run();
     }
 
     fn end(&self, status: &str) -> () {
@@ -99,14 +102,21 @@ impl GameInterface for Game {
         clearscreen::clear().unwrap();
     }
 
+    // fn word_contains_letter(&self, letter: String) -> bool {
+    //     let binding = self.word.to_lowercase();
+    //     let word: &str = binding.as_str();
+    //     // let word: String = self.word.to_lowercase().to_string();
+    //     word.contains(&letter.to_string())
+    // }
+
     fn word_contains_letter(&self, letter: String) -> bool {
         let binding = self.word.to_lowercase();
-        let word: &str = binding.as_str();
+        let word: String = binding;
         // let word: String = self.word.to_lowercase().to_string();
-        word.contains(&letter.to_string())
+        word.contains(&letter)
     }
 
-    fn get_occurrences(&self, mut letter: String) -> Vec<usize> {
+    fn get_occurrences(&self, letter: String) -> Vec<usize> {
         // let word: &str = self.word.to_lowercase().as_str();
         // word.match_indices(*letter).collect()
         // self.word.to_lowercase().match_indices(&letter.to_string())
@@ -145,7 +155,7 @@ impl GameInterface for Game {
 
     fn get_blank_chars(size: usize) -> Vec<String> {
         let mut blank_chars: Vec<String> = Vec::new();
-        for _ in 1..size {
+        for _ in 1..=size {
             blank_chars.push(" ".to_string())
         }
         blank_chars
@@ -157,8 +167,8 @@ impl GameInterface for Game {
         // let joined: String = test.iter().collect::<Vec<_>>().join(separator);
         // let joined: String = sequence.to_vec().iter().collect::<String>();
         // let joined: String = sequence.iter().copied().combinations(2).collect::<Vec<_>>();
-        let joined = sequence.concat();
-        println!("{}", joined);
+        // let joined = sequence.concat();
+        println!("{:?}{separator}", sequence.iter());
     }
 
     fn print_hits(&mut self) -> () {
@@ -174,7 +184,8 @@ impl GameInterface for Game {
     }
 
     fn correct_answer(&mut self, input: String) -> () {
-        self.add_letter_to_hits(input);
+        self.add_letter_to_hits(input.clone());
+        self.add_letter_to_empty_word(input.clone());
     }
 
     fn wrong_answer(&mut self, input: String) -> () {
@@ -182,11 +193,11 @@ impl GameInterface for Game {
         self.add_letter_to_errors(input);
     }
 
-    fn prompt_user() -> String {
+    fn read_user_input() -> String {
         println!("Choose a letter: ");
-        let mut input: String = String::new();
+        let mut input = String::new();
         stdin().read_line(&mut input).unwrap();
-        input
+        input.to_owned()
     }
 
     fn print_gibbet_status(&self) -> () {
@@ -221,13 +232,18 @@ impl GameInterface for Game {
     //     }
     // }
 
-    fn verify_answer(&mut self) -> () {
-        let input: String = Game::<>::prompt_user();
-        if self.word_contains_letter(input.to_lowercase()) {
-            self.correct_answer(input.to_lowercase());
+    fn verify_answer(&mut self, input: String) -> () {
+        if self.word_contains_letter(input.to_lowercase().to_string()) {
+            self.correct_answer(input.to_lowercase().to_string());
         } else {
-            self.wrong_answer(input.to_lowercase());
+            self.wrong_answer(input.to_lowercase().to_string());
         }
+    }
+
+    fn prompt_user(&mut self) -> () {
+        let mut input = Game::<>::read_user_input();
+        input.pop();
+        self.verify_answer(input);
     }
 
     fn win(&self) -> bool {
@@ -242,7 +258,7 @@ impl GameInterface for Game {
     fn run(&mut self) -> () {
         while !self.win() && !self.lost() {
             self.print_game();
-            self.verify_answer();
+            self.prompt_user();
             Game::<>::clear_screen();
         }
         self.end_of_game();
