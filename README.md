@@ -13,4 +13,4 @@
 
 
 # Demo
-![presentation](https://github.com/rjunior8/jogo_da_forca/blob/main/demo.mp4)
+![presentation](https://github.com/rjunior8/jogo_da_forca/blob/main/demo.gif)
