@@ -16,4 +16,4 @@
 ![presentation](https://github.com/rjunior8/jogo_da_forca/blob/main/demo.gif)
 
 
-[![🦀 Rust](https://github.com/rjunior8/jogo_da_forca/actions/workflows/build.yml/badge.svg)](https://github.com/rjunior8/jogo_da_forca/actions/workflows/build.yml)
+[![🦀 Build](https://github.com/rjunior8/jogo_da_forca/actions/workflows/build.yml/badge.svg)](https://github.com/rjunior8/jogo_da_forca/actions/workflows/build.yml)
