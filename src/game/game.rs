@@ -2,6 +2,7 @@ use std::fmt::Debug;
 use std::io::stdin;
 
 use crate::puppet::gibbet::Gibbet;
+use crate::constants::attempts::SIX;
 
 #[derive(Debug, Clone)]
 pub struct Game {
@@ -61,34 +62,13 @@ pub trait GameInterface {
     fn end_of_game(&self) -> ();
 }
 
-// fn buffer_from_iter<I, B>(iter: I) -> B
-//     where I: IntoIterator<Item = B::Item>,
-//           B: GameInterface
-// {
-//     let mut iter = iter.into_iter();
-//     let (lower, _) = iter.size_hint();
-//     let mut ans = B::with_capacity(lower);
-//     while let Some(x) = iter.next() {
-//         ans.push(x);
-//     }
-//     ans
-// }
-//
-// impl std::iter::FromIterator<<Game as GameInterface>::Item> for Game {
-//     fn from_iter<I>(iter: I) -> Self
-//         where I: IntoIterator<Item = <Game as GameInterface>::Item>
-//     {
-//         buffer_from_iter(iter)
-//     }
-// }
-
-// impl<T, I> GameInterface for Game where Vec<(T, I)>: FromIterator<(usize, &'static str)> {
 impl GameInterface for Game {
     fn new(word: &'static str, formed_word_by_hits: Vec<String>, hits: Vec<String>, errors: Vec<String>, attempts: i8) -> Game {
         Game{word, formed_word_by_hits, hits, errors, attempts}
     }
 
     fn start(&mut self) -> () {
+        Game::<>::clear_screen();
         self.formed_word_by_hits = Self::get_blank_chars(self.word.len());
         self.run();
     }
@@ -102,24 +82,13 @@ impl GameInterface for Game {
         clearscreen::clear().unwrap();
     }
 
-    // fn word_contains_letter(&self, letter: String) -> bool {
-    //     let binding = self.word.to_lowercase();
-    //     let word: &str = binding.as_str();
-    //     // let word: String = self.word.to_lowercase().to_string();
-    //     word.contains(&letter.to_string())
-    // }
-
     fn word_contains_letter(&self, letter: String) -> bool {
         let binding = self.word.to_lowercase();
         let word: String = binding;
-        // let word: String = self.word.to_lowercase().to_string();
         word.contains(&letter)
     }
 
     fn get_occurrences(&self, letter: String) -> Vec<usize> {
-        // let word: &str = self.word.to_lowercase().as_str();
-        // word.match_indices(*letter).collect()
-        // self.word.to_lowercase().match_indices(&letter.to_string())
         let mut occurrences: Vec<usize> = Vec::new();
         for (index, character) in self.word.chars().enumerate() {
             if letter.eq_ignore_ascii_case(character.to_string().as_str()) {
@@ -132,14 +101,6 @@ impl GameInterface for Game {
     fn add_letter_to_hits(&mut self, letter: String) -> () {
         self.hits.push(letter);
     }
-
-    // fn add_letter_to_empty_word(&self, letter: char) -> () {
-    //     let occurrences: Vec<_> = self.get_occurrences(letter);
-    //     for (index, _) in occurrences.iter().collect::<Vec<_>>() {
-    //         self.formed_word_by_hits[index] = letter;
-    //     };
-    //     ()
-    // }
 
     fn add_letter_to_empty_word(&mut self, letter: String) -> () {
         let occurrences: Vec<usize> = self.get_occurrences(letter.clone());
@@ -162,13 +123,7 @@ impl GameInterface for Game {
     }
 
     fn print_sequence(separator: String, sequence: Vec<String>) -> () {
-        // let sep: &'static char = separator;
-        // let mut test = vec![sequence.iter()];
-        // let joined: String = test.iter().collect::<Vec<_>>().join(separator);
-        // let joined: String = sequence.to_vec().iter().collect::<String>();
-        // let joined: String = sequence.iter().copied().combinations(2).collect::<Vec<_>>();
-        // let joined = sequence.concat();
-        println!("{:?}{separator}", sequence.iter());
+        println!("{}", sequence.iter().map(|n| format!("{}{separator}", n)).fold(String::new(), |acc, arg| acc + arg.as_str()));
     }
 
     fn print_hits(&mut self) -> () {
@@ -223,15 +178,6 @@ impl GameInterface for Game {
         println!("\n");
     }
 
-    // fn verify_answer(&mut self) -> () {
-    //     let input: String = Game::<>::prompt_user();
-    //     if self.word_contains_letter(&input.to_lowercase().chars().next().expect("No input")) {
-    //         self.correct_answer(&input.to_lowercase().chars().next().expect("No input"));
-    //     } else {
-    //         self.wrong_answer(&input.to_lowercase().chars().next().expect("No input"));
-    //     }
-    // }
-
     fn verify_answer(&mut self, input: String) -> () {
         if self.word_contains_letter(input.to_lowercase().to_string()) {
             self.correct_answer(input.to_lowercase().to_string());
@@ -252,7 +198,7 @@ impl GameInterface for Game {
     }
 
     fn lost(&self) -> bool {
-        self.attempts == 6
+        self.attempts == SIX
     }
 
     fn run(&mut self) -> () {
