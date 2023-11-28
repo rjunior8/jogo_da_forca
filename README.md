@@ -17,5 +17,5 @@
 
 
 [![🦀 Build](https://github.com/rjunior8/jogo_da_forca/actions/workflows/build.yml/badge.svg)](https://github.com/rjunior8/jogo_da_forca/actions/workflows/build.yml)
-[![🧪 Unit Test](https://github.com/rjunior8/jogo_da_forca/actions/workflows/unit_test_with_coverage.yml/badge.svg)](https://github.com/rjunior8/jogo_da_forca/actions/workflows/unit_test_with_coverage.yml)
-![☂️ Coverage](https://github.com/rjunior8/rust_handling_returns/blob/main/main/test-coverage.svg)
+[![🧪 Unit Test (☂️ coverage)](https://github.com/rjunior8/jogo_da_forca/actions/workflows/unit_test_with_coverage.yml/badge.svg)](https://github.com/rjunior8/jogo_da_forca/actions/workflows/unit_test_with_coverage.yml)
+![☂️ Coverage](https://github.com/rjunior8/jogo_da_forca/blob/main/main/test-coverage.svg)
