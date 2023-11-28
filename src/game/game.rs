@@ -10,11 +10,11 @@ pub struct Game {
     formed_word_by_hits: Vec<String>,
     hits: Vec<String>,
     errors: Vec<String>,
-    attempts: i8,
+    attempts: u8,
 }
 
 pub trait GameInterface {
-    fn new(word: &'static str, formed_word_by_hits: Vec<String>, hits: Vec<String>, errors: Vec<String>, attempts: i8) -> Self;
+    fn new(word: &'static str, formed_word_by_hits: Vec<String>, hits: Vec<String>, errors: Vec<String>, attempts: u8) -> Self;
     fn start(&mut self) -> ();
 
     fn end(&self, status: &str) -> ();
@@ -63,7 +63,7 @@ pub trait GameInterface {
 }
 
 impl GameInterface for Game {
-    fn new(word: &'static str, formed_word_by_hits: Vec<String>, hits: Vec<String>, errors: Vec<String>, attempts: i8) -> Game {
+    fn new(word: &'static str, formed_word_by_hits: Vec<String>, hits: Vec<String>, errors: Vec<String>, attempts: u8) -> Game {
         Game{word, formed_word_by_hits, hits, errors, attempts}
     }
 

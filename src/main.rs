@@ -6,7 +6,7 @@ fn main() {
     let errors: Vec<String> = Vec::new();
     let formed_word_by_hits: Vec<String> = Vec::new();
     let word = get_random_word();
-    let attempts: i8 = 0;
+    let attempts: u8 = 0;
     let mut game: Game = GameInterface::new(word, formed_word_by_hits, hits, errors, attempts);
     game.start();
 }

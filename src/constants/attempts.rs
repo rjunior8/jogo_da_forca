@@ -1,1 +1,1 @@
-pub const SIX: i8 = 6;
+pub const SIX: u8 = 6;
