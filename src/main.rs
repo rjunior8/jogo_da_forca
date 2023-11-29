@@ -1,12 +1,7 @@
 use jogo_da_forca::random_word::random_word::get_random_word;
-use jogo_da_forca::game::game::{Game, GameInterface};
+use jogo_da_forca::game::game::{Game, HangmanGame};
 
 fn main() {
-    let hits: Vec<String> = Vec::new();
-    let errors: Vec<String> = Vec::new();
-    let formed_word_by_hits: Vec<String> = Vec::new();
-    let word = get_random_word();
-    let attempts: u8 = 0;
-    let mut game: Game = GameInterface::new(word, formed_word_by_hits, hits, errors, attempts);
+    let mut game: HangmanGame = Game::new(get_random_word(), Vec::new(), Vec::new(), Vec::new(), 0);
     game.start();
 }

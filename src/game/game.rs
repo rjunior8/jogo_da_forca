@@ -5,7 +5,7 @@ use crate::puppet::gibbet::Gibbet;
 use crate::constants::attempts::SIX;
 
 #[derive(Debug, Clone)]
-pub struct Game {
+pub struct HangmanGame {
     word: &'static str,
     formed_word_by_hits: Vec<String>,
     hits: Vec<String>,
@@ -13,7 +13,7 @@ pub struct Game {
     attempts: u8,
 }
 
-pub trait GameInterface {
+pub trait Game {
     fn new(word: &'static str, formed_word_by_hits: Vec<String>, hits: Vec<String>, errors: Vec<String>, attempts: u8) -> Self;
     fn start(&mut self) -> ();
 
@@ -62,13 +62,13 @@ pub trait GameInterface {
     fn end_of_game(&self) -> ();
 }
 
-impl GameInterface for Game {
-    fn new(word: &'static str, formed_word_by_hits: Vec<String>, hits: Vec<String>, errors: Vec<String>, attempts: u8) -> Game {
-        Game{word, formed_word_by_hits, hits, errors, attempts}
+impl Game for HangmanGame {
+    fn new(word: &'static str, formed_word_by_hits: Vec<String>, hits: Vec<String>, errors: Vec<String>, attempts: u8) -> HangmanGame {
+        HangmanGame {word, formed_word_by_hits, hits, errors, attempts}
     }
 
     fn start(&mut self) -> () {
-        Game::<>::clear_screen();
+        HangmanGame::<>::clear_screen();
         self.formed_word_by_hits = Self::get_blank_chars(self.word.len());
         self.run();
     }
@@ -106,8 +106,7 @@ impl GameInterface for Game {
         let occurrences: Vec<usize> = self.get_occurrences(letter.clone());
         for index in occurrences.iter() {
             self.formed_word_by_hits[*index] = letter.clone();
-        };
-        ()
+        }
     }
 
     fn add_letter_to_errors(&mut self, letter: String) -> () {
@@ -127,15 +126,15 @@ impl GameInterface for Game {
     }
 
     fn print_hits(&mut self) -> () {
-        let blank_chars: Vec<String> = Game::<>::get_blank_chars(self.word.len());
+        let blank_chars: Vec<String> = HangmanGame::<>::get_blank_chars(self.word.len());
         let _self = &mut *self.formed_word_by_hits;
-        Game::<>::print_sequence(" ".to_string(), _self.to_vec());
-        Game::<>::print_sequence("_".to_string(),blank_chars);
+        HangmanGame::<>::print_sequence(" ".to_string(), _self.to_vec());
+        HangmanGame::<>::print_sequence("_".to_string(), blank_chars);
     }
 
     fn print_errors(&mut self) -> () {
         let _self = &mut *self.errors;
-        Game::<>::print_sequence(" ".to_string(), _self.to_vec());
+        HangmanGame::<>::print_sequence(" ".to_string(), _self.to_vec());
     }
 
     fn correct_answer(&mut self, input: String) -> () {
@@ -187,7 +186,7 @@ impl GameInterface for Game {
     }
 
     fn prompt_user(&mut self) -> () {
-        let mut input = Game::<>::read_user_input();
+        let mut input = HangmanGame::<>::read_user_input();
         input.pop();
         self.verify_answer(input);
     }
@@ -205,7 +204,7 @@ impl GameInterface for Game {
         while !self.win() && !self.lost() {
             self.print_game();
             self.prompt_user();
-            Game::<>::clear_screen();
+            HangmanGame::<>::clear_screen();
         }
         self.end_of_game();
     }
