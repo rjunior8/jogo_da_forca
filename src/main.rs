@@ -3,5 +3,5 @@ use jogo_da_forca::game::game::{Game, HangmanGame};
 
 fn main() {
     let mut game: HangmanGame = Game::new(get_random_word(), Vec::new(), Vec::new(), Vec::new(), 0);
-    game.start();
+    game.play();
 }

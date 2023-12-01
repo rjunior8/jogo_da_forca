@@ -1,4 +1,4 @@
-use std::io::{stdin, stdout, Write};
+use std::io::{BufRead, stdin, stdout, Write};
 use crate::constants::attempts::SIX;
 use crate::logger::logger::{Logger, StdoutLogger};
 use crate::puppet::gibbet::Gibbet;
@@ -52,13 +52,25 @@ pub fn print_sequence(separator: String, sequence: Vec<String>, logger: &mut dyn
     logger.print(format_args!("{}", sequence.iter().map(|n| format!("{n}{separator}")).fold(String::new(), |acc, arg| acc + arg.as_str())));
 }
 
+pub fn prompt<R, W>(mut reader: R, mut writer: W, question: &str) -> String
+    where
+        R: BufRead,
+        W: Write,
+{
+    write!(&mut writer, "{}", question).expect("Unable to write");
+    stdout().flush().unwrap();
+    let mut s = String::new();
+    reader.read_line(&mut s).expect("Unable to read");
+    s
+}
+
 #[cfg(not(tarpaulin_include))]
-fn read_user_input() -> String {
-    print!("Choose a letter: ");
-    let _ = stdout().flush();
-    let mut input = String::new();
-    stdin().read_line(&mut input).unwrap();
-    input
+fn get_answer() -> String {
+    let stdio = stdin();
+    let input = stdio.lock();
+    let output = stdout();
+    let answer = prompt(input, output, "Choose a letter: ");
+    answer
 }
 
 pub fn print_gibbet(logger: &mut dyn Logger) -> () {

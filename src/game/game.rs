@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 
 use crate::logger::logger::{StdoutLogger};
-use crate::{clear_screen, end_of_game, get_blank_chars, get_occurrences, lost, print_gibbet_status, print_sequence, read_user_input, win, word_contains_letter};
+use crate::{clear_screen, end_of_game, get_answer, get_blank_chars, get_occurrences, lost, print_gibbet_status, print_sequence, win, word_contains_letter};
 
 #[derive(Debug, Clone)]
 pub struct HangmanGame {
@@ -14,7 +14,7 @@ pub struct HangmanGame {
 
 pub trait Game {
     fn new(word: &'static str, formed_word_by_hits: Vec<String>, hits: Vec<String>, errors: Vec<String>, attempts: u8) -> Self;
-    fn start(&mut self) -> ();
+    fn play(&mut self) -> ();
 
     fn add_letter_to_hits(&mut self, letter: String) -> ();
 
@@ -44,7 +44,7 @@ impl Game for HangmanGame {
         HangmanGame {word, formed_word_by_hits, hits, errors, attempts}
     }
 
-    fn start(&mut self) -> () {
+    fn play(&mut self) -> () {
         clear_screen();
         self.formed_word_by_hits = get_blank_chars(self.word.len());
         self.run();
@@ -109,7 +109,7 @@ impl Game for HangmanGame {
     }
 
     fn prompt_user(&mut self) -> () {
-        let mut input = read_user_input();
+        let mut input = get_answer();
         input.pop();
         self.verify_answer(input);
     }

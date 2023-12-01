@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use std::fmt::Arguments;
-    use jogo_da_forca::{word_contains_letter, get_occurrences, get_blank_chars, print_sequence, print_gibbet, print_head, print_head_and_right_arm, print_head_right_arm_and_left_arm, print_head_right_arm_left_arm_and_stem, print_head_right_arm_left_arm_stem_and_right_leg, print_head_right_arm_left_arm_stem_right_leg_and_left_leg, print_default, print_gibbet_status, win, lost, end};
+    use jogo_da_forca::{word_contains_letter, get_occurrences, get_blank_chars, print_sequence, print_gibbet, print_head, print_head_and_right_arm, print_head_right_arm_and_left_arm, print_head_right_arm_left_arm_and_stem, print_head_right_arm_left_arm_stem_and_right_leg, print_head_right_arm_left_arm_stem_right_leg_and_left_leg, print_default, print_gibbet_status, win, lost, end, prompt};
     use jogo_da_forca::constants::gibbet_phases::GIBBET;
     // use jogo_da_forca::game::game::{Game, HangmanGame};
     use jogo_da_forca::logger::logger::Logger;
@@ -138,6 +138,16 @@ mod tests {
         let expected = format!("_ _ _ ");
         print_sequence(String::from(" "), vec!["_".to_string(), "_".to_string(), "_".to_string()], &mut logger);
         assert_eq!(expected.as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn prompt_it_passes() {
+        let input = b"a";
+        let mut output = Vec::new();
+        let answer = prompt(&input[..], &mut output, "Type a letter: ");
+        let output = String::from_utf8(output).expect("Not UTF-8");
+        assert_eq!("Type a letter: ", output);
+        assert_eq!("a", answer);
     }
 
     #[test]
