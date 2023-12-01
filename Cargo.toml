@@ -15,6 +15,8 @@ path = "src/lib.rs"
 
 [dependencies]
 clearscreen = "2.0.1"
+rand = "0.8.5"
+
+[dev-dependencies]
 color-eyre = "0.6.2"
 mockall = "0.11.4"
-rand = "0.8.5"
