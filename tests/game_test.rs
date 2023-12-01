@@ -1,9 +1,11 @@
 #[cfg(test)]
 mod tests {
     use std::fmt::Arguments;
-    use jogo_da_forca::{word_contains_letter, get_occurrences, get_blank_chars, print_sequence};
+    use jogo_da_forca::{word_contains_letter, get_occurrences, get_blank_chars, print_sequence, print_gibbet, print_head, print_head_and_right_arm, print_head_right_arm_and_left_arm, print_head_right_arm_left_arm_and_stem, print_head_right_arm_left_arm_stem_and_right_leg, print_head_right_arm_left_arm_stem_right_leg_and_left_leg, print_default, print_gibbet_status, win, lost, end};
+    use jogo_da_forca::constants::gibbet_phases::GIBBET;
     // use jogo_da_forca::game::game::{Game, HangmanGame};
     use jogo_da_forca::logger::logger::Logger;
+    use jogo_da_forca::puppet::gibbet::Gibbet::{Head, HeadAndRightArm, HeadRightArmAndLeftArm, HeadRightArmLeftArmAndStem, HeadRightArmLeftArmStemAndRightLeg, HeadRightArmLeftArmStemRightLegAndLeftLeg};
 
     #[derive(Default)]
     struct DummyLogger(Vec<String>);
@@ -136,5 +138,191 @@ mod tests {
         let expected = format!("_ _ _ ");
         print_sequence(String::from(" "), vec!["_".to_string(), "_".to_string(), "_".to_string()], &mut logger);
         assert_eq!(expected.as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_gibbet_properly() {
+        let mut logger = DummyLogger::default();
+        let expected = GIBBET;
+        print_gibbet(&mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_head_properly() {
+        let mut logger = DummyLogger::default();
+        let expected = Head;
+        print_head(&mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_head_and_right_arm_properly() {
+        let mut logger = DummyLogger::default();
+        let expected = HeadAndRightArm;
+        print_head_and_right_arm(&mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_head_right_arm_and_left_arm_properly() {
+        let mut logger = DummyLogger::default();
+        let expected = HeadRightArmAndLeftArm;
+        print_head_right_arm_and_left_arm(&mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_head_right_arm_left_arm_and_stem_properly() {
+        let mut logger = DummyLogger::default();
+        let expected = HeadRightArmLeftArmAndStem;
+        print_head_right_arm_left_arm_and_stem(&mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_head_right_arm_left_arm_stem_and_right_leg_properly() {
+        let mut logger = DummyLogger::default();
+        let expected = HeadRightArmLeftArmStemAndRightLeg;
+        print_head_right_arm_left_arm_stem_and_right_leg(&mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_head_right_arm_left_arm_stem_right_leg_and_left_leg_properly() {
+        let mut logger = DummyLogger::default();
+        let expected = HeadRightArmLeftArmStemRightLegAndLeftLeg;
+        print_head_right_arm_left_arm_stem_right_leg_and_left_leg(&mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_default_properly() {
+        let mut logger = DummyLogger::default();
+        let expected = "Invalid";
+        print_default(&mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_gibbet_status_when_attempt_is_zero_prints_gibbet() {
+        let mut logger = DummyLogger::default();
+        let expected = GIBBET;
+        print_gibbet_status(0, &mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_gibbet_status_when_attempt_is_one_prints_gibbet() {
+        let mut logger = DummyLogger::default();
+        let expected = Head;
+        print_gibbet_status(1, &mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_gibbet_status_when_attempt_is_two_prints_gibbet() {
+        let mut logger = DummyLogger::default();
+        let expected = HeadAndRightArm;
+        print_gibbet_status(2, &mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_gibbet_status_when_attempt_is_three_prints_gibbet() {
+        let mut logger = DummyLogger::default();
+        let expected = HeadRightArmAndLeftArm;
+        print_gibbet_status(3, &mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_gibbet_status_when_attempt_is_four_prints_gibbet() {
+        let mut logger = DummyLogger::default();
+        let expected = HeadRightArmLeftArmAndStem;
+        print_gibbet_status(4, &mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_gibbet_status_when_attempt_is_five_prints_gibbet() {
+        let mut logger = DummyLogger::default();
+        let expected = HeadRightArmLeftArmStemAndRightLeg;
+        print_gibbet_status(5, &mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_gibbet_status_when_attempt_is_six_prints_gibbet() {
+        let mut logger = DummyLogger::default();
+        let expected = HeadRightArmLeftArmStemRightLegAndLeftLeg;
+        print_gibbet_status(6, &mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn print_gibbet_status_when_attempt_is_invalid_prints_gibbet() {
+        let mut logger = DummyLogger::default();
+        let expected = "Invalid";
+        print_gibbet_status(7, &mut logger);
+        assert_eq!(expected.to_string().as_str(), logger.0[0]);
+    }
+
+    #[test]
+    fn win_when_won_it_passes() {
+        let word = "Hello";
+        let formed_word_by_hits: Vec<String> = vec!["h".to_string(), "e".to_string(), "l".to_string(), "l".to_string(), "o".to_string()];
+        let expected: bool = true;
+        let actual = win(word, &formed_word_by_hits);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn win_when_not_won_it_passes() {
+        let word = "Hello";
+        let formed_word_by_hits: Vec<String> = vec!["e".to_string(), "l".to_string(), "l".to_string(), "o".to_string()];
+        let expected: bool = false;
+        let actual = win(word, &formed_word_by_hits);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn lost_when_lose() {
+        let attempts: u8 = 6;
+        let expected: bool = true;
+        let actual = lost(attempts);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn lost_when_not_lose() {
+        let attempts: u8 = 1;
+        let expected: bool = false;
+        let actual = lost(attempts);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn end_when_won() {
+        let mut logger = DummyLogger::default();
+        let status = "WON";
+        let word = "Hello";
+        let expected_1 = String::from("You WON");
+        let expected_2 = String::from("\nThe word is: Hello");
+        end(status, word, &mut logger);
+        assert_eq!(expected_1, logger.0[0]);
+        assert_eq!(expected_2, logger.0[1]);
+    }
+
+    #[test]
+    fn end_when_lose() {
+        let mut logger = DummyLogger::default();
+        let status = "LOSE";
+        let word = "Hello";
+        let expected_1 = String::from("You LOSE");
+        let expected_2 = String::from("\nThe word is: Hello");
+        end(status, word, &mut logger);
+        assert_eq!(expected_1, logger.0[0]);
+        assert_eq!(expected_2, logger.0[1]);
     }
 }

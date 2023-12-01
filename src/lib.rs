@@ -1,4 +1,5 @@
 use std::io::{stdin, stdout, Write};
+use crate::constants::attempts::SIX;
 use crate::logger::logger::{Logger, StdoutLogger};
 use crate::puppet::gibbet::Gibbet;
 
@@ -51,6 +52,7 @@ pub fn print_sequence(separator: String, sequence: Vec<String>, logger: &mut dyn
     logger.print(format_args!("{}", sequence.iter().map(|n| format!("{n}{separator}")).fold(String::new(), |acc, arg| acc + arg.as_str())));
 }
 
+#[cfg(not(tarpaulin_include))]
 fn read_user_input() -> String {
     print!("Choose a letter: ");
     let _ = stdout().flush();
@@ -87,20 +89,47 @@ pub fn print_head_right_arm_left_arm_stem_right_leg_and_left_leg(logger: &mut dy
     logger.print(format_args!("{}", Gibbet::HeadRightArmLeftArmStemRightLegAndLeftLeg));
 }
 
-pub fn print_default() -> () {
-    println!("Invalid");
+pub fn print_default(logger: &mut dyn Logger) -> () {
+    logger.print(format_args!("Invalid"));
 }
 
-pub fn print_gibbet_status(attempts: u8) -> () {
-    let mut std_out_logger = StdoutLogger;
+pub fn print_gibbet_status(attempts: u8, logger: &mut dyn Logger) -> () {
     match attempts {
-        0 => print_gibbet(&mut std_out_logger),
-        1 => print_head(&mut std_out_logger),
-        2 => print_head_and_right_arm(&mut std_out_logger),
-        3 => print_head_right_arm_and_left_arm(&mut std_out_logger),
-        4 => print_head_right_arm_left_arm_and_stem(&mut std_out_logger),
-        5 => print_head_right_arm_left_arm_stem_and_right_leg(&mut std_out_logger),
-        6 => print_head_right_arm_left_arm_stem_right_leg_and_left_leg(&mut std_out_logger),
-        _ => print_default(),
+        0 => print_gibbet(logger),
+        1 => print_head(logger),
+        2 => print_head_and_right_arm(logger),
+        3 => print_head_right_arm_and_left_arm(logger),
+        4 => print_head_right_arm_left_arm_and_stem(logger),
+        5 => print_head_right_arm_left_arm_stem_and_right_leg(logger),
+        6 => print_head_right_arm_left_arm_stem_right_leg_and_left_leg(logger),
+        _ => print_default(logger),
+    }
+}
+
+pub fn clear_screen() -> () {
+    clearscreen::clear().unwrap();
+}
+
+pub fn win(word: &'static str, formed_word_by_hits: &Vec<String>) -> bool {
+    let word: String = word.to_lowercase();
+    word.eq(&formed_word_by_hits.concat())
+}
+
+pub fn lost(attempts: u8) -> bool {
+    attempts == SIX
+}
+
+pub fn end(status: &str, word: &'static str, logger: &mut dyn Logger) -> () {
+    logger.print(format_args!("You {status}"));
+    logger.print(format_args!("\nThe word is: {word}"));
+}
+
+#[cfg(not(tarpaulin_include))]
+pub fn end_of_game(word: &'static str, formed_word_by_hits: &Vec<String>, attempts: u8) -> () {
+    let mut std_out_logger = StdoutLogger;
+    if win(word, &formed_word_by_hits) {
+        end("WON", word, &mut std_out_logger);
+    } else if lost(attempts) {
+        end("LOSE", word, &mut std_out_logger);
     }
 }

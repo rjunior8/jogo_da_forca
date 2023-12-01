@@ -1,8 +1,7 @@
 use std::fmt::Debug;
 
 use crate::logger::logger::{StdoutLogger};
-use crate::constants::attempts::SIX;
-use crate::{get_blank_chars, get_occurrences, print_gibbet_status, print_sequence, read_user_input, word_contains_letter};
+use crate::{clear_screen, end_of_game, get_blank_chars, get_occurrences, lost, print_gibbet_status, print_sequence, read_user_input, win, word_contains_letter};
 
 #[derive(Debug, Clone)]
 pub struct HangmanGame {
@@ -16,10 +15,6 @@ pub struct HangmanGame {
 pub trait Game {
     fn new(word: &'static str, formed_word_by_hits: Vec<String>, hits: Vec<String>, errors: Vec<String>, attempts: u8) -> Self;
     fn start(&mut self) -> ();
-
-    fn end(&self, status: &str) -> ();
-
-    fn clear_screen() -> ();
 
     fn add_letter_to_hits(&mut self, letter: String) -> ();
 
@@ -41,13 +36,7 @@ pub trait Game {
 
     fn prompt_user(&mut self) -> ();
 
-    fn win(&self) -> bool;
-
-    fn lost(&self) -> bool;
-
     fn run(&mut self) -> ();
-
-    fn end_of_game(&self) -> ();
 }
 
 impl Game for HangmanGame {
@@ -56,18 +45,9 @@ impl Game for HangmanGame {
     }
 
     fn start(&mut self) -> () {
-        HangmanGame::<>::clear_screen();
+        clear_screen();
         self.formed_word_by_hits = get_blank_chars(self.word.len());
         self.run();
-    }
-
-    fn end(&self, status: &str) -> () {
-        println!("You {}", status);
-        println!("\nThe word is: {}", self.word);
-    }
-
-    fn clear_screen() -> () {
-        clearscreen::clear().unwrap();
     }
 
     fn add_letter_to_hits(&mut self, letter: String) -> () {
@@ -110,10 +90,11 @@ impl Game for HangmanGame {
     }
 
     fn print_game(&mut self) -> () {
+        let mut std_out_logger = StdoutLogger;
         println!("\n\t\tJogo da Forca");
         self.print_errors();
         println!("\n");
-        print_gibbet_status(self.attempts);
+        print_gibbet_status(self.attempts, &mut std_out_logger);
         println!("\n");
         self.print_hits();
         println!("\n");
@@ -133,29 +114,12 @@ impl Game for HangmanGame {
         self.verify_answer(input);
     }
 
-    fn win(&self) -> bool {
-        let word: String = self.word.to_lowercase();
-        word.eq(&self.formed_word_by_hits.concat())
-    }
-
-    fn lost(&self) -> bool {
-        self.attempts == SIX
-    }
-
     fn run(&mut self) -> () {
-        while !self.win() && !self.lost() {
+        while !win(&self.word, &self.formed_word_by_hits) && !lost(self.attempts) {
             self.print_game();
             self.prompt_user();
-            HangmanGame::<>::clear_screen();
+            clear_screen();
         }
-        self.end_of_game();
-    }
-
-    fn end_of_game(&self) -> () {
-        if self.win() {
-            self.end("WON");
-        } else if self.lost() {
-            self.end("LOSE");
-        }
+        end_of_game(self.word, &self.formed_word_by_hits, self.attempts);
     }
 }
