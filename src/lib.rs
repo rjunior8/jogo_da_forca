@@ -91,7 +91,7 @@ pub fn print_default() -> () {
     println!("Invalid");
 }
 
-fn print_gibbet_status(attempts: u8) -> () {
+pub fn print_gibbet_status(attempts: u8) -> () {
     let mut std_out_logger = StdoutLogger;
     match attempts {
         0 => print_gibbet(&mut std_out_logger),
